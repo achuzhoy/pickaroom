@@ -45,14 +45,29 @@ def eliminate_occupied_rooms(cursor,rooms):
         print("Sorry. No more available rooms. Exiting...")
     return rooms
 
+def flushdb(password):
+    if password == "<string>":
+        db = db_connection()
+        cursor=db.cursor()
+        sql = "delete from vacation"
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except:
+            return  "################################# Sorry... Couldn't flush the DB. ############################\n"
+        return "Good password. Flushed the DB."
+    else:
+        return "Bad Password"
 
-def main(familyname):
+def db_connection():
     db_user="<string>"
     db_passwd="<string>"
     db_name="<string>"
-    
-    db = MySQLdb.connect(host="localhost", user=db_user, passwd=db_passwd,db=db_name)   
-    cursor = db.cursor()
+    return MySQLdb.connect(host="localhost", user=db_user, passwd=db_passwd,db=db_name)   
+
+def main(familyname):
+    db = db_connection()
+    cursor=db.cursor()
     all_rooms=["one","two","three","four","five","six","seven","eight"]
     rooms=eliminate_occupied_rooms(cursor,all_rooms)
     errorcheck=populate_db(cursor,familyname,rooms)
